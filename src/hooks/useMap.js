@@ -28,21 +28,23 @@ export const useMap = (initialPoint) => {
 
   //agregar marcadores
   const addMarker = useCallback((event) => {
-    const { lng, lat } = event.lngLat;
+    const { lng, lat } = event.lngLat || event;
 
     const marker = new mapboxgl.Marker();
-    marker.id = uuidv4();
+    marker.id = event.id ? event.id : uuidv4();
     marker.setLngLat([lng, lat]).addTo(map.current).setDraggable(true);
     //adTo recibe el map en el cual se insertara el marker
     //setDraggable permite deslizar el markador
 
     markers.current[marker.id] = marker;
 
-    onNewMarker.current.next({
-      id: marker.id,
-      lng,
-      lat,
-    });
+    if (!event.id) {
+      onNewMarker.current.next({
+        id: marker.id,
+        lng,
+        lat,
+      });
+    }
 
     //escuchar movimiento del marker
     marker.on("drag", (event) => {
@@ -54,6 +56,12 @@ export const useMap = (initialPoint) => {
         lat,
       });
     });
+  }, []);
+
+  //actualizar marker
+  const updateMarkerPosition = useCallback(({ id, lng, lat }) => {
+    //setLngLat actualiza la longitud y latitud de un marcador
+    markers.current[id].setLngLat([lng, lat]);
   }, []);
 
   useEffect(() => {
@@ -96,6 +104,7 @@ export const useMap = (initialPoint) => {
     coords,
     setRef,
     addMarker,
+    updateMarkerPosition,
     onNewMarker$: onNewMarker.current,
     onMoveMarker$: onMoveMarker.current,
   };

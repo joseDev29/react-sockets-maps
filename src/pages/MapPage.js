@@ -1,26 +1,9 @@
-import React, { useEffect } from "react";
-import { useMap } from "../hooks/useMap";
+import React from "react";
 
-const initialPoint = {
-  lng: 5,
-  lat: 34,
-  zoom: 2,
-};
+import { useMapSockets } from "../hooks/useMapSockets";
 
 export const MapPage = () => {
-  const { coords, setRef, onNewMarker$, onMoveMarker$ } = useMap(initialPoint);
-
-  useEffect(() => {
-    onNewMarker$.subscribe((marker) => {
-      console.log("marker created: ", marker);
-    });
-  }, [onNewMarker$]);
-
-  useEffect(() => {
-    onMoveMarker$.subscribe((marker) => {
-      console.log("marker move: ", marker);
-    });
-  }, [onMoveMarker$]);
+  const { coords, setRef } = useMapSockets();
 
   return (
     <>

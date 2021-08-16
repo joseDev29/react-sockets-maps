@@ -1,5 +1,10 @@
+import { SocketProvider } from "./context/SocketContext";
 import { MapPage } from "./pages/MapPage";
 
 export const App = () => {
-  return <MapPage />;
+  return (
+    <SocketProvider>
+      <MapPage />
+    </SocketProvider>
+  );
 };
